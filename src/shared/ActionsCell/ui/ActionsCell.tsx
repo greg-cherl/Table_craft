@@ -1,27 +1,54 @@
-import { Button } from '@mui/material'
+import { Button, styled } from '@mui/material'
 import { GridRowId, GridRowModes, GridRowModesModel } from '@mui/x-data-grid'
-import { useState } from 'react'
+import style from './ActionsCell.module.css'
+import DeleteIcon from '@mui/icons-material/Delete'
+import ModeEditIcon from '@mui/icons-material/ModeEdit'
 
-export const ActionsCell = ({ id }) => {
-	const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
-
+export const ActionsCell = ({
+	id,
+	rowModesModel,
+	handleSaveClick,
+	handleCancelClick,
+	handleEditClick,
+	handleDeleteClick,
+}: any) => {
 	const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
 
-	return isInEditMode
-		? [
-				<Button color='primary' onClick={handleSaveClick(id)}>
-					Сохранить
-				</Button>,
-				<Button color='primary' onClick={handleCancelClick(id)}>
-					Отмена
-				</Button>,
-		  ]
-		: [
-				<Button color='primary' onClick={handleEditClick(id)}>
-					Редактировать
-				</Button>,
-				<Button color='primary' onClick={handleDeleteClick(id)}>
-					Удалить
-				</Button>,
-		  ]
+	return isInEditMode ? (
+		<>
+			<Button
+				className={style.button}
+				sx={{ backgroundColor: '#4caf50 ' }}
+				color='primary'
+				onClick={handleSaveClick(id)}
+			>
+				Сохранить
+			</Button>
+			<Button
+				className={style.button}
+				sx={{ backgroundColor: '#607d8b  ' }}
+				color='primary'
+				onClick={handleCancelClick(id)}
+			>
+				Отмена
+			</Button>
+		</>
+	) : (
+		<>
+			<Button
+				className={style.button}
+				sx={{ backgroundColor: '#2196f3' }}
+				onClick={handleEditClick(id)}
+			>
+				Редактировать
+			</Button>
+			<Button
+				className={style.button}
+				sx={{ backgroundColor: '#f44336 ' }}
+				onClick={handleDeleteClick(id)}
+			>
+				Удалить
+			</Button>
+		</>
+	)
 }

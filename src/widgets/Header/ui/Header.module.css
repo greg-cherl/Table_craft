@@ -1,6 +1,17 @@
 .header {
+	transition:
+		margin-left 0.3s,
+		width 0.3s;
+}
+
+.open {
+	margin-left: 240px;
+	width: calc(100% - 240px);
+}
+
+.right {
 	display: flex;
 	align-items: center;
-	gap: 20px;
-	padding: 0px 15px;
+	justify-content: space-between;
+	width: 100%;
 }
