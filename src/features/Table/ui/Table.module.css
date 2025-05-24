@@ -1,0 +1,11 @@
+.wrapperShowMoreData {
+	width: 100%;
+	text-align: center;
+	margin-top: 20px;
+}
+.showMoreData {
+	text-transform: none;
+	font-size: 18px;
+	color: #fff;
+	background-color: #4caf50;
+}

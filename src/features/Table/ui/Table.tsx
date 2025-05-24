@@ -1,29 +1,15 @@
-import * as React from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import AddIcon from '@mui/icons-material/Add'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/DeleteOutlined'
-import SaveIcon from '@mui/icons-material/Save'
-import CancelIcon from '@mui/icons-material/Close'
-import {
-	GridRowsProp,
-	GridRowModesModel,
-	GridRowModes,
-	DataGrid,
-	GridColDef,
-	GridToolbarContainer,
-	GridEventListener,
-	GridRowId,
-	GridRowModel,
-	GridRowEditStopReasons,
-} from '@mui/x-data-grid'
-import { AddRecordButton } from '../../AddRecordButton/AddRecordButton'
+import { DataGrid } from '@mui/x-data-grid'
 import { useTableData } from '../../hooks/useTableData'
 import { getColumns } from '../../../entities/users/model/columns'
-import { useGetUsersQuery } from '../../../entities/users/model/api'
+import style from './Table.module.css'
+import { useEffect, useState } from 'react'
+import CircularProgress from '@mui/material/CircularProgress'
 
 export const Table = () => {
+	const [loadingRequest, setLoadingRequest] = useState<boolean>(false)
+
 	const {
 		rows,
 		rowModesModel,
@@ -34,6 +20,7 @@ export const Table = () => {
 		handleRowModesModelChange,
 		processRowUpdate,
 		handleRowEditStop,
+		fetchNextPage,
 	} = useTableData()
 
 	const columns = getColumns({
@@ -44,9 +31,24 @@ export const Table = () => {
 		handleDeleteClick,
 	})
 
+	const handleShowMoreData = async () => {
+		setLoadingRequest(true)
+
+		setTimeout(() => {
+			setLoadingRequest(false)
+			fetchNextPage()
+		}, 2000)
+	}
+
 	return (
-		<Box sx={{ width: '70%', margin: '0 auto' }}>
+		<Box
+			sx={{
+				width: '70%',
+				margin: '0 auto',
+			}}
+		>
 			<DataGrid
+				style={{ height: '100%', overflow: 'auto' }}
 				rows={rows}
 				// checkboxSelection
 				columns={columns}
@@ -58,6 +60,19 @@ export const Table = () => {
 				hideFooter
 				showColumnVerticalBorder={true}
 			/>
+			<div className={style.wrapperShowMoreData}>
+				{loadingRequest ? (
+					<CircularProgress />
+				) : (
+					<Button
+						className={style.showMoreData}
+						onClick={handleShowMoreData}
+						disabled={loadingRequest}
+					>
+						Показать ещё
+					</Button>
+				)}
+			</div>
 		</Box>
 	)
 }

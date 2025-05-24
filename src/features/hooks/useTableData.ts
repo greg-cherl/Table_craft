@@ -7,14 +7,14 @@ import {
 	GridRowModesModel,
 } from '@mui/x-data-grid'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { RootState } from '../../../app/store/store'
 import {
 	useAddUserMutation,
 	useDeleteUserMutation,
-	useGetUsersQuery,
+	useGetUsersInfiniteQuery,
 	useUpdateUserMutation,
 } from '../../entities/users/model/api'
 import {
@@ -23,7 +23,9 @@ import {
 } from '../../entities/users/model/gymManagerSlice'
 
 export const useTableData = () => {
-	const { data: rows = [], isLoading, isError } = useGetUsersQuery()
+	const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+		useGetUsersInfiniteQuery()
+
 	const newRows = useSelector((state: RootState) => state.gymManager.rows)
 
 	const [deleteUser] = useDeleteUserMutation()
@@ -31,8 +33,10 @@ export const useTableData = () => {
 	const [addUser] = useAddUserMutation()
 
 	const dispatch = useDispatch()
+	const pages = data?.pages ?? []
 
-	const combinedRows = newRows ? [...rows, newRows] : rows
+	const allRows = pages.flat()
+	const combinedRows = newRows ? [...allRows, newRows] : allRows
 
 	const rowModesModel = useSelector(
 		(state: RootState) => state.gymManager.rowModesModel
@@ -107,5 +111,8 @@ export const useTableData = () => {
 		handleRowModesModelChange,
 		processRowUpdate,
 		handleRowEditStop,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
 	}
 }
