@@ -4,10 +4,18 @@ export const usersApi = createApi({
 	reducerPath: 'users',
 	baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/' }),
 	endpoints: build => ({
-		getUsers: build.query<any[], void>({
-			query: () => `users`,
-			providesTags: ['Users'],
+		getUsers: build.infiniteQuery<any[], void, number>({
+			query: ({ pageParam = 1 }) => `users?_page=${pageParam}&_limit=8`,
+			infiniteQueryOptions: {
+				initialPageParam: 1,
+				getNextPageParam: (lastPage, allPages) => {
+					// Проверяйте, что lastPage не пустой
+					if (lastPage.length === 0) return undefined
+					return allPages.length + 1
+				},
+			},
 		}),
+
 		deleteUser: build.mutation<void, string>({
 			query: id => ({
 				url: `users/${id}`,
@@ -34,7 +42,7 @@ export const usersApi = createApi({
 })
 
 export const {
-	useGetUsersQuery,
+	useGetUsersInfiniteQuery,
 	useDeleteUserMutation,
 	useAddUserMutation,
 	useUpdateUserMutation,
